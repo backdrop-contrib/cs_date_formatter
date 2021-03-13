@@ -1,0 +1,7 @@
+name = "Client Side Date Field Formatter"
+description = "Let the browser format date fields in to show it human readable and localized."
+tags[] = Dates
+tags[] = Content
+tags[] = Fields
+backdrop = 1.x
+type = module
