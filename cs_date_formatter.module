@@ -89,6 +89,7 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
     'long' => t('Long'),
   );
   $options_sl = array_slice($options_nsl, 1);
+  $options_num_types = array_merge($options, $options_n2d);
 
   $element['weekday'] = array(
     '#type' => 'select',
@@ -99,7 +100,7 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
   $element['year'] = array(
     '#type' => 'select',
     '#title' => t('Year display'),
-    '#options' => array_merge($options, $options_n2d),
+    '#options' => $options_num_types,
     '#default_value' => $settings['year'],
   ) + $element_commons;
   $element['month'] = array(
@@ -111,25 +112,25 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
   $element['day'] = array(
     '#type' => 'select',
     '#title' => t('Day display'),
-    '#options' => array_merge($options, $options_n2d),
+    '#options' => $options_num_types,
     '#default_value' => $settings['day'],
   ) + $element_commons;
   $element['hour'] = array(
     '#type' => 'select',
     '#title' => t('Hour display'),
-    '#options' => array_merge($options, $options_n2d),
+    '#options' => $options_num_types,
     '#default_value' => $settings['hour'],
   ) + $element_commons;
   $element['minute'] = array(
     '#type' => 'select',
     '#title' => t('Minute display'),
-    '#options' => array_merge($options, $options_n2d),
+    '#options' => $options_num_types,
     '#default_value' => $settings['minute'],
   ) + $element_commons;
   $element['second'] = array(
     '#type' => 'select',
     '#title' => t('Seconds display'),
-    '#options' => array_merge($options, $options_n2d),
+    '#options' => $options_num_types,
     '#default_value' => $settings['second'],
   ) + $element_commons;
   $element['timezonename'] = array(
