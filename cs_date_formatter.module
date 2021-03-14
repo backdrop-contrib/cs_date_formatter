@@ -40,7 +40,6 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
   $element = array();
-  debug($settings);
   $element['date_format'] = array(
     '#title' => t('Format'),
     '#type' => 'radios',
@@ -51,8 +50,7 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
     ),
   );
 
-  // @todo field name.
-  $name_attribute = 'fields[field_a_date][settings_edit_form][settings][date_format]';
+  $name_attribute = 'fields[' . $field['field_name'] . '][settings_edit_form][settings][date_format]';
   $states = array(
     'invisible' => array(
       ':input[name="' . $name_attribute . '"]' => array('value' => 'simple'),
