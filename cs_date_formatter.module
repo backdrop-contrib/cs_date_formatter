@@ -16,7 +16,6 @@ function cs_date_formatter_field_formatter_info() {
         'date',
         'datestamp',
         'datetime',
-        // @todo which additional fields?
       ),
       'settings' => array(
         'date_format' => 'simple',
@@ -142,9 +141,19 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
 function cs_date_formatter_field_formatter_settings_summary($field, $instance, $view_mode) {
   $display = $instance['display'][$view_mode];
   $settings = $display['settings'];
-  $summary = 'Let the browser render the date (requires Javascript)';
-  if ($settings == 'simple') {
-    // @todo.
+  $summary = '<p>' . t('Let the browser render the date (requires Javascript)') . '</p>';
+
+  if ($settings['date_format'] == 'extended') {
+    $list = array();
+    foreach ($settings as $key => $value) {
+      if ($value != 'hidden') {
+        $list[] = $key . ': ' . $value;
+      }
+    }
+    $summary .= theme('item_list', array('items' => $list));
+  }
+  else {
+    $summary .= theme('item_list', array('items' => array('date_format: simple')));
   }
   return $summary;
 }
