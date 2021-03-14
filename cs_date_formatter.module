@@ -244,6 +244,7 @@ function theme_cs_date_formatter_default($variables) {
  * Custom helper function to convert different date formats to timestamp.
  *
  * @param array $element
+ *   Associative array of date field values.
  *
  * @return array
  *   Array with start and possibly end as timestamps.
