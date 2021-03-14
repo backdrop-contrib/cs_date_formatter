@@ -221,7 +221,6 @@ function cs_date_formatter_theme($existing, $type, $theme, $path) {
  * Custom theme function.
  */
 function theme_cs_date_formatter_default($variables) {
-  $element = $variables['element'];
   $value = _cs_date_formatter_get_timestamp($variables['element']);
   // @todo make fallback format configurable?
   $fallback = format_date($value, 'html_datetime');
