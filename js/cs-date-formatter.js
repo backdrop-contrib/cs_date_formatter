@@ -1,5 +1,5 @@
 /**
- * @todo.
+ * Provides Backdrop behaviors for this module.
  */
 (function ($) {
 
