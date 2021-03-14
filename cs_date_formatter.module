@@ -17,6 +17,7 @@ function cs_date_formatter_field_formatter_info() {
         'datestamp',
         'datetime',
       ),
+      // @see https://reference.codeproject.com/Book/javascript/reference/global_objects/datetimeformat
       'settings' => array(
         'date_format' => 'simple',
         'weekday' => 'hidden',
