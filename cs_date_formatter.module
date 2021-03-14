@@ -1,5 +1,6 @@
 <?php
 /**
+ * @file
  * Client Side Date Formatter main code.
  */
 
@@ -143,7 +144,7 @@ function cs_date_formatter_field_formatter_settings_summary($field, $instance, $
   $settings = $display['settings'];
   $summary = 'Let the browser render the date (requires Javascript)';
   if ($settings == 'simple') {
-   // @todo.
+    // @todo.
   }
   return $summary;
 }
@@ -153,43 +154,40 @@ function cs_date_formatter_field_formatter_settings_summary($field, $instance, $
  */
 function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-  $settings = $display['settings'];
 
-  switch ($display['type']) {
-    case 'cs_date_format':
-      foreach ($items as $delta => $item) {
-        $element[$delta] = array(
-          '#theme' => 'cs_date_formatter_default',
-          '#element' => $item,
-          '#field' => $instance,
-        );
+  if ($display['type'] == 'cs_date_format') {
+    $settings = $display['settings'];
+    foreach ($items as $delta => $item) {
+      $element[$delta] = array(
+        '#theme' => 'cs_date_formatter_default',
+        '#element' => $item,
+        '#field' => $instance,
+      );
 
-        // Attach our Javascript and settings.
-        $element[$delta]['#attached']['js'][] = array(
-          'data' => backdrop_get_path('module', 'cs_date_formatter') . '/js/cs-date-formatter.js',
-          'type' => 'file',
-        );
-        $js_settings = array();
-        if ($settings['date_format'] == 'extended') {
-          $js_settings['date_format'] = 'extended';
-          $js_settings['extended'] = array_filter($settings, function($value) {
-            return ($value != 'hidden' && $value != 'extended');
-          });
-        }
-        else {
-          $js_settings['date_format'] = 'simple';
-          $js_settings['extended'] = array();
-        }
-        // @todo does this work with several fields with different settings?
-        $element[$delta]['#attached']['js'][] = array(
-          'data' => array(
-            'csDateFormatter' => array($field['field_name'] => $js_settings),
-          ),
-          'type' => 'setting',
-        );
+      // Attach our Javascript and settings.
+      $element[$delta]['#attached']['js'][] = array(
+        'data' => backdrop_get_path('module', 'cs_date_formatter') . '/js/cs-date-formatter.js',
+        'type' => 'file',
+      );
+      $js_settings = array();
+      if ($settings['date_format'] == 'extended') {
+        $js_settings['date_format'] = 'extended';
+        $js_settings['extended'] = array_filter($settings, function($value) {
+          return ($value != 'hidden' && $value != 'extended');
+        });
       }
-      break;
-
+      else {
+        $js_settings['date_format'] = 'simple';
+        $js_settings['extended'] = array();
+      }
+      // @todo does this work with several fields with different settings?
+      $element[$delta]['#attached']['js'][] = array(
+        'data' => array(
+          'csDateFormatter' => array($field['field_name'] => $js_settings),
+        ),
+        'type' => 'setting',
+      );
+    }
   }
 
   return $element;
@@ -213,8 +211,8 @@ function cs_date_formatter_theme($existing, $type, $theme, $path) {
  * Custom theme function.
  */
 function theme_cs_date_formatter_default($variables) {
-  // @todo it's not always a timestamp.
-  $value = $variables['element']['value'];
+  $element = $variables['element'];
+  $value = _cs_date_formatter_get_timestamp($variables['element']);
   // @todo make fallback format configurable?
   $fallback = format_date($value, 'html_datetime');
   $attributes = array(
@@ -226,4 +224,18 @@ function theme_cs_date_formatter_default($variables) {
   $markup = '<time ' . backdrop_attributes($attributes) . '>' . $fallback . '</time>';
 
   return $markup;
+}
+
+/**
+ * Custom helper function to convert different date formats to timestamp.
+ */
+function _cs_date_formatter_get_timestamp($element) {
+  switch ($element['date_type']) {
+    case 'datestamp':
+      return $element['value'];
+
+    default:
+      $date = new BackdropDateTime($element['value'], $element['timezone_db']);
+      return $date->format('U');
+  }
 }
