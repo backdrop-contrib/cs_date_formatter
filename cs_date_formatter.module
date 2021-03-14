@@ -153,20 +153,18 @@ function cs_date_formatter_field_formatter_settings_summary($field, $instance, $
  */
 function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-  //$settings = isset($display['settings']) ? $display['settings'] : array();
   $settings = $display['settings'];
 
   switch ($display['type']) {
     case 'cs_date_format':
       foreach ($items as $delta => $item) {
-        $field_class = 'field-name-' . str_replace('_', '-', $field['field_name']);
-        // @todo create theme function.
-        // @todo it's not always a timestamp.
-        // @todo make fallback format configurable.
-        $fallback = format_date($item['value'], 'html_datetime');
-        $themed = '<span class="cs-date-format" data-cs-timestamp="' . $item['value'] . '" data-cs-setting-name="' . $field_class . '">' . $fallback . '</span>';
-        $element[$delta] = array('#markup' => $themed);
+        $element[$delta] = array(
+          '#theme' => 'cs_date_formatter_default',
+          '#element' => $item,
+          '#field' => $instance,
+        );
 
+        // Attach our Javascript and settings.
         $element[$delta]['#attached']['js'][] = array(
           'data' => backdrop_get_path('module', 'cs_date_formatter') . '/js/cs-date-formatter.js',
           'type' => 'file',
@@ -185,7 +183,7 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
         // @todo does this work with several fields with different settings?
         $element[$delta]['#attached']['js'][] = array(
           'data' => array(
-            'csDateFormatter' => array($field_class => $js_settings),
+            'csDateFormatter' => array($field['field_name'] => $js_settings),
           ),
           'type' => 'setting',
         );
@@ -195,4 +193,37 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
   }
 
   return $element;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cs_date_formatter_theme($existing, $type, $theme, $path) {
+  return array(
+    'cs_date_formatter_default' => array(
+      'variables' => array(
+        'element' => NULL,
+        'field' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Custom theme function.
+ */
+function theme_cs_date_formatter_default($variables) {
+  // @todo it's not always a timestamp.
+  $value = $variables['element']['value'];
+  // @todo make fallback format configurable?
+  $fallback = format_date($value, 'html_datetime');
+  $attributes = array(
+    'datetime' => $fallback,
+    'class' => array('cs-date-format'),
+    'data-cs-timestamp' => $value,
+    'data-cs-setting-name' => $variables['field']['field_name'],
+  );
+  $markup = '<time ' . backdrop_attributes($attributes) . '>' . $fallback . '</time>';
+
+  return $markup;
 }
