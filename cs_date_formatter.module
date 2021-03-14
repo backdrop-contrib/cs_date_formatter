@@ -60,6 +60,13 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
       ':input[name="' . $name_attribute . '"]' => array('value' => 'simple'),
     ),
   );
+  $element_commons = array(
+    '#states' => $states,
+    '#wrapper_attributes' => array(
+      'class' => array('cs-date-formatter-row'),
+    ),
+  );
+
   $options = array(
     'hidden' => t('Hidden'),
   );
@@ -79,56 +86,52 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
     '#title' => t('Weekday display'),
     '#options' => array_merge($options, $options_nsl),
     '#default_value' => isset($settings['weekday']) ? $settings['weekday'] : 'hidden',
-    '#states' => $states,
-  );
+  ) + $element_commons;
   $element['year'] = array(
     '#type' => 'select',
     '#title' => t('Year display'),
     '#options' => array_merge($options, $options_n2d),
     '#default_value' => isset($settings['year']) ? $settings['year'] : 'numeric',
-    '#states' => $states,
-  );
+  ) + $element_commons;
   $element['month'] = array(
     '#type' => 'select',
     '#title' => t('Month display'),
     '#options' => array_merge($options, $options_n2d, $options_nsl),
     '#default_value' => isset($settings['month']) ? $settings['month'] : 'short',
-    '#states' => $states,
-  );
+  ) + $element_commons;
   $element['day'] = array(
     '#type' => 'select',
     '#title' => t('Day display'),
     '#options' => array_merge($options, $options_n2d),
     '#default_value' => isset($settings['day']) ? $settings['day'] : '2-digit',
-    '#states' => $states,
-  );
+  ) + $element_commons;
   $element['hour'] = array(
     '#type' => 'select',
     '#title' => t('Hour display'),
     '#options' => array_merge($options, $options_n2d),
     '#default_value' => isset($settings['hour']) ? $settings['hour'] : '2-digit',
-    '#states' => $states,
-  );
+  ) + $element_commons;
   $element['minute'] = array(
     '#type' => 'select',
     '#title' => t('Minute display'),
     '#options' => array_merge($options, $options_n2d),
     '#default_value' => isset($settings['minute']) ? $settings['minute'] : '2-digit',
-    '#states' => $states,
-  );
+  ) + $element_commons;
   $element['second'] = array(
     '#type' => 'select',
     '#title' => t('Seconds display'),
     '#options' => array_merge($options, $options_n2d),
     '#default_value' => isset($settings['second']) ? $settings['second'] : 'hidden',
-    '#states' => $states,
-  );
+  ) + $element_commons;
   $element['timezonename'] = array(
     '#type' => 'select',
     '#title' => t('Timezone name display'),
     '#options' => array_merge($options, $options_sl),
     '#default_value' => isset($settings['timezonename']) ? $settings['timezonename'] : 'short',
-    '#states' => $states,
+  ) + $element_commons;
+
+  $element['#attached']['css'] = array(
+    backdrop_get_path('module', 'cs_date_formatter') . '/css/cs-date-formatter-admin.css',
   );
 
   return $element;

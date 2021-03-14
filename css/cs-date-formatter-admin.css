@@ -1,0 +1,15 @@
+/**
+ * Client Side Date Formatter admin css.
+ */
+.cs-date-formatter-row {
+  display: table-row;
+  border-bottom: 1px solid;
+}
+.cs-date-formatter-row label {
+  display: table-cell;
+  padding: .7em;
+}
+.cs-date-formatter-row select {
+  margin: .7em;
+  min-width: 8em;
+}
