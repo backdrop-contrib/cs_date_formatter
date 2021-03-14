@@ -52,7 +52,15 @@ function cs_date_formatter_field_formatter_settings_form($field, $instance, $vie
     ),
   );
 
-  $name_attribute = 'fields[' . $field['field_name'] . '][settings_edit_form][settings][date_format]';
+  // Consider we're on a views admin form, which uses different attributes than
+  // the regular field UI admin form.
+  $args = arg();
+  if (isset($args[2]) && $args[2] == 'views') {
+    $name_attribute = 'options[settings][date_format]';
+  }
+  else {
+    $name_attribute = 'fields[' . $field['field_name'] . '][settings_edit_form][settings][date_format]';
+  }
   $states = array(
     'invisible' => array(
       ':input[name="' . $name_attribute . '"]' => array('value' => 'simple'),
