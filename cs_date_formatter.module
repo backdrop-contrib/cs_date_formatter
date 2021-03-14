@@ -222,30 +222,51 @@ function cs_date_formatter_theme($existing, $type, $theme, $path) {
  * Custom theme function.
  */
 function theme_cs_date_formatter_default($variables) {
-  $value = _cs_date_formatter_get_timestamp($variables['element']);
-  // @todo make fallback format configurable?
-  $fallback = format_date($value, 'html_datetime');
-  $attributes = array(
-    'datetime' => $fallback,
-    'class' => array('cs-date-format'),
-    'data-cs-timestamp' => $value,
-    'data-cs-setting-name' => $variables['field']['field_name'],
-  );
-  $markup = '<time ' . backdrop_attributes($attributes) . '>' . $fallback . '</time>';
+  $values = _cs_date_formatter_get_timestamp($variables['element']);
+  $tags = array();
+  foreach ($values as $key => $value) {
+    // @todo make fallback format configurable?
+    $fallback = format_date($value, 'html_datetime');
+    $attributes = array(
+      'datetime' => $fallback,
+      'class' => array('cs-date-format'),
+      'data-cs-timestamp' => $value,
+      'data-cs-setting-name' => $variables['field']['field_name'],
+    );
+    $tags[] = '<time ' . backdrop_attributes($attributes) . '>' . $fallback . '</time>';
+  }
+  $markup = implode(' - ', $tags);
 
   return $markup;
 }
 
 /**
  * Custom helper function to convert different date formats to timestamp.
+ *
+ * @param array $element
+ *
+ * @return array
+ *   Array with start and possibly end as timestamps.
  */
 function _cs_date_formatter_get_timestamp($element) {
+  $values = array();
   switch ($element['date_type']) {
     case 'datestamp':
-      return $element['value'];
+      $values['start'] = $element['value'];
+      if (isset($element['value2'])) {
+        $values['end'] = $element['value2'];
+      }
+      break;
 
     default:
       $date = new BackdropDateTime($element['value'], $element['timezone_db']);
-      return $date->format('U');
+      $values['start'] = $date->format('U');
+      if (isset($element['value2'])) {
+        $date_end = new BackdropDateTime($element['value2'], $element['timezone_db']);
+        $values['end'] = $date->format('U');
+      }
+      break;
+
   }
+  return $values;
 }
