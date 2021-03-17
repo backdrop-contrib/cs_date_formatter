@@ -13,10 +13,15 @@
       var csSettings = settings.csDateFormatter;
       $(context).find('.cs-date-format').once('cs-date-format').each(function () {
         var settingName = $(this).data('cs-setting-name');
+        if (csSettings[settingName] === undefined) {
+          return;
+        }
         var fieldSetting = csSettings[settingName];
-        var timestamp = $(this).data('cs-timestamp');
-        var date = new Date(timestamp * 1000);
-
+        var dateString = $(this).attr('datetime');
+        if (dateString === undefined) {
+          return;
+        }
+        var date = new Date(dateString);
         if (fieldSetting['date_format'] == 'extended') {
           var options = fieldSetting['extended'];
           var dtFormat = new Intl.DateTimeFormat(uaLangs, options);

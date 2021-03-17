@@ -250,15 +250,14 @@ function theme_cs_date_formatter_default($variables) {
 
   $setting_name = $variables['field']['field_name'] . '-' . $variables['view_mode'];
   foreach ($values as $key => $value) {
-    // @todo make fallback format configurable?
-    $fallback = format_date($value, 'html_datetime');
+    // Javascript will parse the date_string.
+    $date_string = format_date($value, 'html_datetime');
     $attributes = array(
-      'datetime' => $fallback,
+      'datetime' => $date_string,
       'class' => array('cs-date-format'),
-      'data-cs-timestamp' => $value,
       'data-cs-setting-name' => $setting_name,
     );
-    $tags[] = '<time ' . backdrop_attributes($attributes) . '>' . $fallback . '</time>';
+    $tags[] = '<time ' . backdrop_attributes($attributes) . '>' . $date_string . '</time>';
   }
   $markup = implode(' - ', $tags);
 
