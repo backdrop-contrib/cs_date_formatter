@@ -171,6 +171,17 @@ function cs_date_formatter_field_formatter_settings_summary($field, $instance, $
 }
 
 /**
+ * Implements hook_field_display_alter().
+ *
+ * Hand over the view_mode to cs_date_formatter_field_formatter_view().
+ */
+function cs_date_formatter_field_display_alter(&$display, $context) {
+  if ($display['type'] == 'cs_date_format') {
+    $display['view_mode'] = $context['view_mode'];
+  }
+}
+
+/**
  * Implements hook_field_formatter_view().
  */
 function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
@@ -183,6 +194,7 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
         '#theme' => 'cs_date_formatter_default',
         '#element' => $item,
         '#field' => $instance,
+        '#view_mode' => $display['view_mode'],
       );
 
       // Attach our Javascript and settings.
@@ -201,9 +213,10 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
         $js_settings['date_format'] = 'simple';
         $js_settings['extended'] = array();
       }
+      $setting_name = $field['field_name'] . '-' . $display['view_mode'];
       $element[$delta]['#attached']['js'][] = array(
         'data' => array(
-          'csDateFormatter' => array($field['field_name'] => $js_settings),
+          'csDateFormatter' => array($setting_name => $js_settings),
         ),
         'type' => 'setting',
       );
@@ -222,6 +235,7 @@ function cs_date_formatter_theme($existing, $type, $theme, $path) {
       'variables' => array(
         'element' => NULL,
         'field' => NULL,
+        'view_mode' => NULL,
       ),
     ),
   );
@@ -233,6 +247,8 @@ function cs_date_formatter_theme($existing, $type, $theme, $path) {
 function theme_cs_date_formatter_default($variables) {
   $values = _cs_date_formatter_get_timestamp($variables['element']);
   $tags = array();
+
+  $setting_name = $variables['field']['field_name'] . '-' . $variables['view_mode'];
   foreach ($values as $key => $value) {
     // @todo make fallback format configurable?
     $fallback = format_date($value, 'html_datetime');
@@ -240,7 +256,7 @@ function theme_cs_date_formatter_default($variables) {
       'datetime' => $fallback,
       'class' => array('cs-date-format'),
       'data-cs-timestamp' => $value,
-      'data-cs-setting-name' => $variables['field']['field_name'],
+      'data-cs-setting-name' => $setting_name,
     );
     $tags[] = '<time ' . backdrop_attributes($attributes) . '>' . $fallback . '</time>';
   }
