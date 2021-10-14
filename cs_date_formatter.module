@@ -189,12 +189,19 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
 
   if ($display['type'] == 'cs_date_format') {
     $settings = $display['settings'];
+    $view_mode = '';
+    if (isset($display['view_mode'])) {
+      $view_mode = $display['view_mode'];
+    }
+    elseif (isset($display['views_view'])) {
+      $view_mode = $display['views_view']->name;
+    }
     foreach ($items as $delta => $item) {
       $element[$delta] = array(
         '#theme' => 'cs_date_formatter_default',
         '#element' => $item,
         '#field' => $instance,
-        '#view_mode' => isset($display['view_mode']) ? $display['view_mode'] : '',
+        '#view_mode' => $view_mode,
       );
 
       // Attach our Javascript and settings.
@@ -218,10 +225,7 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
         $js_settings['date_format'] = 'simple';
         $js_settings['extended'] = array();
       }
-      $setting_name = $field['field_name'];
-      if (isset($display['view_mode'])) {
-        $setting_name .= '-' . $display['view_mode'];
-      }
+      $setting_name = $field['field_name'] . '-' . $view_mode;
       $element[$delta]['#attached']['js'][] = array(
         'data' => array(
           'csDateFormatter' => array($setting_name => $js_settings),
