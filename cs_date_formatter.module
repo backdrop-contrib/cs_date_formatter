@@ -194,7 +194,7 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
         '#theme' => 'cs_date_formatter_default',
         '#element' => $item,
         '#field' => $instance,
-        '#view_mode' => $display['view_mode'],
+        '#view_mode' => isset($display['view_mode']) ? $display['view_mode'] : '',
       );
 
       // Attach our Javascript and settings.
@@ -208,12 +208,20 @@ function cs_date_formatter_field_formatter_view($entity_type, $entity, $field, $
         $js_settings['extended'] = array_filter($settings, function($value) {
           return ($value != 'hidden' && $value != 'extended');
         });
+        if (isset($js_settings['extended']['timezonename'])) {
+          // Switch to camel case.
+          $js_settings['extended']['timeZoneName'] = $js_settings['extended']['timezonename'];
+          unset($js_settings['extended']['timezonename']);
+        }
       }
       else {
         $js_settings['date_format'] = 'simple';
         $js_settings['extended'] = array();
       }
-      $setting_name = $field['field_name'] . '-' . $display['view_mode'];
+      $setting_name = $field['field_name'];
+      if (isset($display['view_mode'])) {
+        $setting_name .= '-' . $display['view_mode'];
+      }
       $element[$delta]['#attached']['js'][] = array(
         'data' => array(
           'csDateFormatter' => array($setting_name => $js_settings),
@@ -248,7 +256,10 @@ function theme_cs_date_formatter_default($variables) {
   $values = _cs_date_formatter_get_timestamp($variables['element']);
   $tags = array();
 
-  $setting_name = $variables['field']['field_name'] . '-' . $variables['view_mode'];
+  $setting_name = $variables['field']['field_name'];
+  if (!empty($variables['view_mode'])) {
+    $setting_name .= '-' . $variables['view_mode'];
+  }
   foreach ($values as $key => $value) {
     // Javascript will parse the date_string.
     $date_string = format_date($value, 'html_datetime');
