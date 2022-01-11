@@ -12,10 +12,12 @@ enabled).
 
 ## Installation
 
-Install this module using the [official Backdrop CMS instructions](https://backdropcms.org/guide/modules).
+Install this module using the [official Backdrop CMS instructions](https://docs.backdropcms.org/documentation/extend-with-modules).
 
 Configure the date fields display you wish to use client-side date field
 rendering.
+
+![Display settings](https://raw.githubusercontent.com/backdrop-contrib/cs_date_formatter/1.x-1.x/screenshots/display-settings.webp)
 
 ## Issues
 
