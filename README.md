@@ -21,8 +21,8 @@ rendering.
 
 With settings as in the screenshot above the same date (field) will look like:
 
-- Jun 30, 2022, 07:00 AM PDT (for someone in Los Angeles)
-- 30. Juni 2022, 16:00 MESZ (for someone in Vienna)
+- `Jun 30, 2022, 07:00 AM PDT` (for someone in Los Angeles)
+- `30. Juni 2022, 16:00 MESZ` (for someone in Vienna)
 
 ## Issues
 
